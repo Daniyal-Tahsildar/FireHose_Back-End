@@ -250,34 +250,54 @@ void launchOnIPU(long unsigned int dim, int argc, char **argv) {
             output_init[i] = -1.0f;
         }
 
-        printMatrix("Multiplicand", multiplicand, dim);
-        printMatrix("Multiplier", multiplier, dim);
+        //printMatrix("Multiplicand", multiplicand, dim);
+        //printMatrix("Multiplier", multiplier, dim);
 
         executeIPUCode(device, exe, multiplicand, multiplier, output_init, anomalies);
 
-        printMatrix("Result", output_init , dim);
+        //printMatrix("Result", output_init , dim);
 
-        printMatrix("Anomaly", anomalies, dim);
+        //printMatrix("Anomaly", anomalies, dim);
 
-        std::ofstream myFile ("results.txt");
+        std::ofstream mltnd_strm ("multiplicand.txt");
+
+        for(int i = 0; i < multiplicand.size(); i++)
+        {
+          mltnd_strm << multiplicand[i];
+          mltnd_strm << "\n";
+        }
+
+        mltnd_strm.close();
+
+        std::ofstream mltr_strm ("multiplier.txt");
+
+        for(int i = 0; i < multiplier.size(); i++)
+        {
+          mltr_strm << multiplier[i];
+          mltr_strm << "\n";
+        }
+
+        mltr_strm.close();
+
+        std::ofstream results_strm ("results.txt");
 
         for(int i = 0; i < output_init.size(); i++)
         {
-          myFile << output_init[i];
-          myFile << "\n";
+          results_strm << output_init[i];
+          results_strm << "\n";
         }
 
-        myFile.close();
+        results_strm.close();
 
-        std::ofstream myFile2 ("anomalies.txt");
+        std::ofstream anom_strm ("anomalies.txt");
 
         for(int i = 0; i < anomalies.size(); i++)
         {
-          myFile2 << anomalies[i];
-          myFile2 << "\n";
+          anom_strm << anomalies[i];
+          anom_strm << "\n";
         }
 
-        myFile2.close();
+        anom_strm.close();
 
     } catch (const std::exception &e) {
          std::cerr << "Exception: " << e.what() << "\n";

@@ -7,53 +7,67 @@
 
 int main() {
 
-    std::ifstream myFile0("results.txt");
+
+
+    std::ifstream check_start("results.txt");
     std::string file_status;
-    int done = 1;
+
+    int waiting = 1;
     std::cout << "Waiting on Back-End...\n";
-    while(done) {
-        std::getline(myFile0, file_status);
+
+    while(waiting) {
+
+        std::getline(check_start, file_status);
+
         if (file_status == "F") {
-            myFile0.clear();
-            myFile0.seekg(0);
+            check_start.clear();
+            check_start.seekg(0);
         }
         else {
-            done = 0;
+            waiting = 0;
         }
         sleep(2);
+
         std::cout << "Waiting on Back-End...\n";
     }
 
-    myFile0.close();
+    check_start.close();
 
     std::vector<float> results;
     std::vector<float> anomalies;
 
-    std::ifstream myFile("results.txt");
+    std::ifstream results_strm("results.txt");
 
-    std::string temp;
-    while(myFile.good()) {
-        std::getline(myFile, temp);
+    std::string buf;
+    while(results_strm.good()) {
+        std::getline(results_strm, buf);
 
-        if (temp != "") {
-            results.push_back(std::stof(temp));
+        switch(buf.size()) {
+            case 0:
+                break;
+            default:
+                results.push_back(std::stof(buf));
+                break;
         }
     }
 
-    myFile.close();
+    results_strm.close();
 
-    std::ifstream myFile2("anomalies.txt");
+    std::ifstream anom_strm("anomalies.txt");
 
-    while(myFile2.good()) {
-        std::getline(myFile2, temp);
+    while(anom_strm.good()) {
+        std::getline(anom_strm, buf);
 
-        if (temp != "") {
-            anomalies.push_back(std::stof(temp));
+        switch(buf.size()) {
+            case 0:
+                break;
+            default:
+                anomalies.push_back(std::stof(buf));
+                break;
         }
     }
 
-    myFile2.close();
-
+    anom_strm.close();
 
     std::cout << "Results\n";
     int root = std::sqrt(results.size());
@@ -76,15 +90,15 @@ int main() {
         }
     }
 
-    std::ofstream myFile3 ("results.txt");
+    std::ofstream results_write ("results.txt");
 
-    myFile3 << "F";
+    results_write << "F";
 
-    myFile3.close();
+    results_write.close();
 
-    std::ofstream myFile4 ("anomalies.txt");
+    std::ofstream anom_write ("anomalies.txt");
 
-    myFile4 << "F";
+    anom_write << "F";
 
-    myFile4.close();
+    anom_write.close();
 }
